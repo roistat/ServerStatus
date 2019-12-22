@@ -86,7 +86,6 @@ function uptime() {
 				$("#servers").append(
 					"<tr id=\"r" + i + "\" data-toggle=\"collapse\" data-target=\"#rt" + i + "\" class=\"accordion-toggle " + hack + "\">" +
 						"<td id=\"online4\"><div class=\"progress\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-warning\"><small>Loading</small></div></div></td>" +
-						"<td id=\"online6\"><div class=\"progress\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-warning\"><small>Loading</small></div></div></td>" +
 						"<td id=\"name\">Loading...</td>" +
 						"<td id=\"type\">Loading...</td>" +
 						"<td id=\"host\">Loading...</td>" +
@@ -124,15 +123,6 @@ function uptime() {
 				TableRow.children["online4"].children[0].children[0].innerHTML = "<small>Down</small>";
 			}
 
-			// Online6
-			if (result.servers[i].online6) {
-				TableRow.children["online6"].children[0].children[0].className = "progress-bar progress-bar-success";
-				TableRow.children["online6"].children[0].children[0].innerHTML = "<small>Up</small>";
-			} else {
-				TableRow.children["online6"].children[0].children[0].className = "progress-bar progress-bar-danger";
-				TableRow.children["online6"].children[0].children[0].innerHTML = "<small>Down</small>";
-			}
-
 			// Name
 			TableRow.children["name"].innerHTML = result.servers[i].name;
 
@@ -144,7 +134,8 @@ function uptime() {
 
 			// Location
 			TableRow.children["location"].innerHTML = result.servers[i].location;
-			if (!result.servers[i].online4 && !result.servers[i].online6) {
+
+			if (!result.servers[i].online4) {
 				if (server_status[i]) {
 					TableRow.children["uptime"].innerHTML = "–";
 					TableRow.children["load"].innerHTML = "–";
@@ -251,8 +242,6 @@ function uptime() {
 				var ExpandRow = $("#servers #rt" + i);
 				TableRow.children["online4"].children[0].children[0].className = "progress-bar progress-bar-error";
 				TableRow.children["online4"].children[0].children[0].innerHTML = "<small>Error</small>";
-				TableRow.children["online6"].children[0].children[0].className = "progress-bar progress-bar-error";
-				TableRow.children["online6"].children[0].children[0].innerHTML = "<small>Error</small>";
 				TableRow.children["uptime"].innerHTML = "<div class=\"progress progress-striped active\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-error\"><small>Error</small></div></div>";
 				TableRow.children["load"].innerHTML = "<div class=\"progress progress-striped active\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-error\"><small>Error</small></div></div>";
 				TableRow.children["network"].innerHTML = "<div class=\"progress progress-striped active\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-error\"><small>Error</small></div></div>";
