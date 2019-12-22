@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/dark.css" title="dark">
 		<link rel="stylesheet" href="css/light.css" title="light">
+		<link rel="stylesheet" href="css/common.css">
 		<style>
 			body {
 				padding-top: 70px;
@@ -34,12 +35,13 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a href="#" class="navbar-brand">ServerStatus</a>
+						<a href="/" class="navbar-brand">ServerStatus</a>
+						<a href="#" class="js-update navbar-brand glyphicon glyphicon-refresh" style="margin-right: 10px;"></a>
 					</div>
 					<div class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li class="dropdown">
-								<a data-toggle="dropdown" class="dropdown-toggle" href="#">Style<b class="caret"></b></a>
+								<a data-toggle="dropdown" class="dropdown-toggle" href="javascript: return true;">Style<b class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li><a href="#" onclick="setActiveStyleSheet('dark')">Dark</a></li>
 									<li><a href="#" onclick="setActiveStyleSheet('light')">Light</a></li>
@@ -66,7 +68,7 @@
 				</div>
 				<p></p>
 			</div>
-			<table class="table table-striped table-condensed table-hover">
+			<table class="table table-striped table-condensed table-hover js-sorted-table">
 				<thead>
 				<tr>
 					<th id="status4" style="text-align: center;">IPv4</th>
@@ -88,12 +90,6 @@
 			</table>
 			<br />
 			<div id="updated">Updating...</div>
-		</div>
-
-		<div class="container">
-			<p style="text-align: center; font-size: 10px;">
-				<a href="https://github.com/BotoX/ServerStatus">ServerStatus</a>
-			</p>
 		</div>
 		<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>

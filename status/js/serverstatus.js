@@ -71,11 +71,14 @@ function bytesToSize(bytes, precision, si)
 	}
 }
 
-function uptime() {
+function reloadPage() {
 	$.getJSON("json/stats.json", function(result) {
 		$("#loading-notice").remove();
-		if(result.reload)
-			setTimeout(function() { location.reload(true) }, 1000);
+		if(result.reload) {
+      setTimeout(function() { location.reload(true) }, 1000);
+    }
+
+    result.servers = sortServerRows(result.servers);
 
 		for (var i = 0; i < result.servers.length; i++) {
 			var TableRow = $("#servers tr#r" + i);
@@ -109,7 +112,7 @@ function uptime() {
 				server_status[i] = true;
 			}
 			TableRow = TableRow[0];
-			if(error) {
+			if (error) {
 				TableRow.setAttribute("data-target", "#rt" + i);
 				server_status[i] = true;
 			}
@@ -165,7 +168,7 @@ function uptime() {
 				TableRow.children["uptime"].innerHTML = result.servers[i].uptime;
 
 				// Load
-				if(result.servers[i].load == -1) {
+				if (result.servers[i].load == -1) {
 					TableRow.children["load"].innerHTML = "–";
 				} else {
 					TableRow.children["load"].innerHTML = result.servers[i].load.toFixed(2);
@@ -271,9 +274,9 @@ function updateTime() {
 		$("#updated").html("Last updated: " + timeSince(d));
 }
 
-uptime();
+reloadPage();
 updateTime();
-setInterval(uptime, 2000);
+setInterval(reloadPage, 10000);
 setInterval(updateTime, 500);
 
 
@@ -333,13 +336,94 @@ window.onload = function(e) {
 	var cookie = readCookie("style");
 	var title = cookie ? cookie : getPreferredStyleSheet();
 	setActiveStyleSheet(title);
-}
+};
 
 window.onunload = function(e) {
 	var title = getActiveStyleSheet();
 	createCookie("style", title, 365);
-}
+};
 
 var cookie = readCookie("style");
 var title = cookie ? cookie : getPreferredStyleSheet();
 setActiveStyleSheet(title);
+
+
+function saveSort(column) {
+  createCookie("sort", column, 365);
+}
+
+function getSort() {
+  var column = readCookie("sort");
+  return column ? column : null;
+}
+
+function calcColumnValue(row, column) {
+  var result = null;
+  console.log('Column: ' + column);
+  if (column === 'hdd') {
+    result = ((row.hdd_used/row.hdd_total)*100.0).toFixed(0);
+  } else if (column === 'ram') {
+    result = ((row.memory_used/row.memory_total)*100.0).toFixed(0);
+  } else if (column === 'cpu') {
+    result = row.cpu;
+  } else if (column === 'uptime') {
+    result = row.uptime.split("days").join("").trim();
+  } else if (column === 'load') {
+    result = row.load;
+  } else if (column === 'network') {
+    result = row.network_rx + row.network_tx;
+  }
+  console.log('Value: ' + result);
+  return Number(result);
+}
+
+function sortServerRows(rows) {
+  var columnSort = getSort();
+  if (!columnSort) {
+    console.log("No sort");
+    return rows;
+  }
+  var column = columnSort.split("!").join("");
+  var isReverse = columnSort === column;
+
+  var result = rows.sort(function(a ,b) {
+    var aValue = calcColumnValue(a, column);
+    var bValue = calcColumnValue(b, column);
+
+    if (aValue > bValue) {
+      return 1;
+    }
+    if (aValue < bValue) {
+      return -1;
+    }
+    return 0;
+  });
+  if (isReverse) {
+    result = result.reverse();
+  }
+  return result;
+}
+
+$(function() {
+  $(document).on("click", ".js-update", function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    $this.addClass('color-disabled');
+    reloadPage();
+    setTimeout(function() {
+      $this.removeClass('color-disabled');
+    }, 1000);
+  });
+
+  $(document).on("click", ".js-sorted-table tr th", function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    var columnId = $this.attr('id');
+    var oldId = getSort();
+    if (oldId === columnId) {
+      columnId = "!" + columnId;
+    }
+    saveSort(columnId);
+    reloadPage();
+  })
+});

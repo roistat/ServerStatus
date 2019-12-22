@@ -1,0 +1,4 @@
+.color-disabled { color: gray !important; }
+.js-sorted-table tr th:hover {
+    cursor: pointer;
+}
